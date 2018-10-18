@@ -1,7 +1,7 @@
 " WebPage: http://github.com/t9md/vim-quickhl
 
 if exists('g:loaded_quickhl')
-  finish
+    finish
 endif
 let g:loaded_quickhl = 1
 
@@ -9,42 +9,42 @@ let g:quickhl_debug = 0
 
 " GlobalVar: {{{
 if !exists('g:quickhl_manual_colors')
-  let g:quickhl_manual_colors = [
-        \ 'cterm=bold ctermfg=16 ctermbg=153 gui=bold guifg=#ffffff guibg=#0a7383',
-        \ 'cterm=bold ctermfg=7  ctermbg=1   gui=bold guibg=#a07040 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=2   gui=bold guibg=#4070a0 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=3   gui=bold guibg=#40a070 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=4   gui=bold guibg=#70a040 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=5   gui=bold guibg=#0070e0 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=6   gui=bold guibg=#007020 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=21  gui=bold guibg=#d4a00d guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=22  gui=bold guibg=#06287e guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=45  gui=bold guibg=#5b3674 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=16  gui=bold guibg=#4c8f2f guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=50  gui=bold guibg=#1060a0 guifg=#ffffff',
-        \ 'cterm=bold ctermfg=7  ctermbg=56  gui=bold guibg=#a0b0c0 guifg=black',
-        \ ]
+    let g:quickhl_manual_colors = [
+    \ 'cterm=bold ctermfg=16 ctermbg=153 gui=bold guifg=#ffffff guibg=#0a7383',
+    \ 'cterm=bold ctermfg=7  ctermbg=1   gui=bold guibg=#a07040 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=2   gui=bold guibg=#4070a0 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=3   gui=bold guibg=#40a070 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=4   gui=bold guibg=#70a040 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=5   gui=bold guibg=#0070e0 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=6   gui=bold guibg=#007020 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=21  gui=bold guibg=#d4a00d guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=22  gui=bold guibg=#06287e guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=45  gui=bold guibg=#5b3674 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=16  gui=bold guibg=#4c8f2f guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=50  gui=bold guibg=#1060a0 guifg=#ffffff',
+    \ 'cterm=bold ctermfg=7  ctermbg=56  gui=bold guibg=#a0b0c0 guifg=black',
+    \ ]
 endif
 
 let s:default_settings = {
-      \ 'g:quickhl_manual_enable_at_startup': 0,
-      \ 'g:quickhl_manual_keywords': [],
-      \ 'g:quickhl_manual_hl_priority': 10,
-      \ 'g:quickhl_tag_enable_at_startup': 0,
-      \ 'g:quickhl_tag_hl_command': 'QuickhlTag gui=underline cterm=underline term=underline',
-      \ 'g:quickhl_tag_hl_priority': 9,
-      \ 'g:quickhl_tag_minimum_identifier': 4,
-      \ 'g:quickhl_cword_enable_at_startup': 0,
-      \ 'g:quickhl_cword_hl_command': 'link QuickhlCword Search',
-      \ }
+\ 'g:quickhl_manual_enable_at_startup': 0,
+\ 'g:quickhl_manual_keywords': [],
+\ 'g:quickhl_manual_hl_priority': 10,
+\ 'g:quickhl_tag_enable_at_startup': 0,
+\ 'g:quickhl_tag_hl_command': 'QuickhlTag gui=underline cterm=underline term=underline',
+\ 'g:quickhl_tag_hl_priority': 9,
+\ 'g:quickhl_tag_minimum_identifier': 4,
+\ 'g:quickhl_cword_enable_at_startup': 0,
+\ 'g:quickhl_cword_hl_command': 'link QuickhlCword Search',
+\ }
 
 " }}}
 
 function! s:set_default(dict) abort "{{{
-  for [var, val] in items(a:dict)
-    if !exists(var) | let {var} = val | endif
-    unlet! var val
-  endfor
+    for [var, val] in items(a:dict)
+        if !exists(var) | let {var} = val | endif
+        unlet! var val
+    endfor
 endfunction
 
 call s:set_default(s:default_settings)
@@ -101,14 +101,14 @@ command! QuickhlTagToggle   :call quickhl#tag#toggle()
 nno <silent>  <plug>(quickhl-manual-this-motion)  :<c-u>set opfunc=quickhl#manual#this_motion<cr>g@
 
 if g:quickhl_cword_enable_at_startup
-  call quickhl#cword#enable()
+    call quickhl#cword#enable()
 endif
 
 if g:quickhl_tag_enable_at_startup
-  call quickhl#tag#enable()
+    call quickhl#tag#enable()
 endif
 
 if g:quickhl_manual_enable_at_startup
-  call quickhl#manual#enable()
+    call quickhl#manual#enable()
 endif
 "}}}
