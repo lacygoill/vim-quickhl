@@ -1,42 +1,39 @@
-function! quickhl#get_selected_text() "{{{
-"copy & paste from tyru's open-browser.vim
-  let save_z = getreg('z', 1)
-  let save_z_type = getregtype('z')
-  try
-    silent normal! gv"zy
-    return substitute(@z,"\n.*",'','')
-  finally
-    call setreg('z', save_z, save_z_type)
-  endtry
-endfunction "}}}
+fu! quickhl#get_selected_text() abort "{{{1
+    let save_z = getreg('z', 1)
+    let save_z_type = getregtype('z')
+    try
+        sil norm! gv"zy
+        return substitute(@z,"\n.*",'','')
+    finally
+        call setreg('z', save_z, save_z_type)
+    endtry
+endfu
 
-function! quickhl#warn(error) "{{{
-	echohl WarningMsg
-  echomsg 'quickhl:  ' . a:error
-  echohl None
-endfunction "}}}
+fu! quickhl#warn(error) abort "{{{1
+    echohl WarningMsg
+    echomsg 'quickhl:  ' . a:error
+    echohl None
+endfu
 
-let s:metachar = '\/~ .*^[''$'
-function! quickhl#escape(pattern) "{{{
-  return escape(a:pattern, s:metachar)
-endfunction "}}}
+fu! quickhl#escape(pattern) abort "{{{1
+    return escape(a:pattern, '\/~ .*^[''$')
+endfu
 
-function! quickhl#our_match(pattern) "{{{
-  return filter(getmatches(), "v:val.group =~# '". a:pattern . "'")
-endfunction "}}}
+fu! quickhl#our_match(pattern) abort "{{{1
+    return filter(getmatches(), {i,v -> v.group =~# a:pattern})
+endfu
 
-function! quickhl#windo(func, obj) "{{{
-  let winnum = winnr()
-  let pwinnum = winnr('#')
-  " echo [pwinnum, winnum]
-  " echo PP(a:func)
-  " echo PP(a:obj)
-  noautocmd windo call call(a:func, [], a:obj)
+fu! quickhl#windo(func, obj) abort "{{{1
+    let winnum = winnr()
+    let pwinnum = winnr('#')
+    " echo [pwinnum, winnum]
+    " echo PP(a:func)
+    " echo PP(a:obj)
+    noautocmd windo call call(a:func, [], a:obj)
 
-  if pwinnum !=# 0
-    execute pwinnum . "wincmd w"
-  endif
-  execute winnum . "wincmd w"
-endfunction "}}}
+    if pwinnum !=# 0
+        exe pwinnum . "wincmd w"
+    endif
+    exe winnum . "wincmd w"
+endfu
 
-" vim: foldmethod=marker

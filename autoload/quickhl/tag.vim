@@ -70,4 +70,3 @@ function! quickhl#tag#refresh() "{{{
 endfunction "}}}
 
 call s:tag.init()
-" vim: foldmethod=marker

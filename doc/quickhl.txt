@@ -1,20 +1,9 @@
 *quickhl.txt* Quickly highlight multiple pattern.
-						      
-       .oooooo.		       o8o	    oooo       oooo	  oooo	~
-      d8P'  `Y8b	       `"'	    `888       `888	  `888	~
-     888      888  oooo  oooo oooo  .ooooo.  888  oooo	888 .oo.   888	~
-     888      888  `888  `888 `888 d88' `"Y8 888 .8P'	888P"Y88b  888	
-     888      888   888   888  888 888	     888888.	888   888  888	 >
-     `88b    d88b   888   888  888 888	 .o8 888 `88b.	888   888  888	
-      `Y8bood8P'Ybd'`V88V"V8P'o888o`Y8bod8P'o888o o888oo888o o888oo888o
-<
-Version: 1.0
-Author : t9md <taqumd@gmail.com>
+
 GitHub : https://github.com/t9md/vim-quickhl
 ==============================================================================
 CONTENTS					*quickhl-contents*
 
-Introduction				    |quickhl-introduction|
 Mapping					    |quickhl-mapping|
 Commands				    |quickhl-commands|
 Variables				    |quickhl-variables|
@@ -23,10 +12,6 @@ Use Case				    |quickhl-usecase|
 Practice				    |quickhl-practice|
 Bug					    |quickhl-bug|
 Changelog				    |quickhl-changelog|
-
-==============================================================================
-INTRODUCTION					*quickhl-introduction*
-
 
 ==============================================================================
 MAPPINGS					*quickhl-mappings*
@@ -123,7 +108,7 @@ VARIABLES						*quickhl-variables*
 	"keyword1"
 	Dictionary~
 	{ "pattern": 'KEYWORD', "regexp": 1 }
-	"regexp" is optional, if you set it to 1, the KEYWORD you sepcified
+	"regexp" is optional, if you set it to 1, the KEYWORD you specified
 	will not escaped, so it's useful you want to add 'regexp' keyword.
 
 [ tag ]~
@@ -194,29 +179,3 @@ Add keyword which is always highlighted.
         \ ]
 <
 ==============================================================================
-CHANGELOG						*quickhl-changelog*
-2013-10-08:
-	- add g:quickhl_tag_minimum_identifier(default: 4) to avoid short tag
-	  make mess on the window.
-2013-10-06:
-	- add operator
-	  Originally created by 'rbtnn'. Thanks 'rbtnn'!!
-	  https://github.com/rbtnn/vim-operator-quickhl.vim
-2013-10-06: v0.9
-	- introduce tag highlight and a lot of refactoring.
-2011-09-03:
-	- bugfix duplicate keyword added when TabEnter or ColorScheme event.
-2011-09-01: v0.5
-	- support regexp pattern
-	- extend command :QuickhlDel could delete by index
-	- extend g:quickhl_keywords to support regexp pattern.
-2011-08-21: v0.4
-	- fix compatibility issue for pre v7.2
-2011-08-18: v0.3
-	- add new command :QuickhlLock and :QuichlUnlock.
-2011-08-17: v0.2
-	- completely re-writen to use |match()| other than |:syntax|.
-2011-06-21: v0.1
-	- initial version
-==============================================================================
-vim:tw=78:ts=8:ft=help:norl:

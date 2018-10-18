@@ -64,4 +64,3 @@ function! quickhl#cword#toggle() "{{{
 endfunction "}}}
 
 call s:cword.init()
-" vim: foldmethod=marker
