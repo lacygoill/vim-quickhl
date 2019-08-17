@@ -11,7 +11,7 @@ endfu
 
 fu! quickhl#warn(error) abort "{{{1
     echohl WarningMsg
-    echomsg 'quickhl:  ' . a:error
+    echom 'quickhl:  '..a:error
     echohl None
 endfu
 
@@ -20,7 +20,7 @@ fu! quickhl#escape(pattern) abort "{{{1
 endfu
 
 fu! quickhl#our_match(pattern) abort "{{{1
-    return filter(getmatches(), {i,v -> v.group =~# a:pattern})
+    return filter(getmatches(), {_,v -> v.group =~# a:pattern})
 endfu
 
 fu! quickhl#windo(func, obj) abort "{{{1
@@ -29,11 +29,11 @@ fu! quickhl#windo(func, obj) abort "{{{1
     " echo [pwinnum, winnum]
     " echo PP(a:func)
     " echo PP(a:obj)
-    noautocmd windo call call(a:func, [], a:obj)
+    noa windo call call(a:func, [], a:obj)
 
-    if pwinnum !=# 0
-        exe pwinnum . "wincmd w"
+    if pwinnum != 0
+        exe pwinnum..'wincmd w'
     endif
-    exe winnum . "wincmd w"
+    exe winnum..'wincmd w'
 endfu
 
