@@ -22,11 +22,11 @@ let g:loaded_quickhl = 1
 "}}}
 " TODO: We can't highlight a multi-line visual selection:{{{
 "
-"         foo
-"         bar
-"         baz
-"         qux
-"         norf
+"     foo
+"     bar
+"     baz
+"     qux
+"     norf
 "
 " For the moment, we need to do:
 "
@@ -53,6 +53,13 @@ let g:loaded_quickhl = 1
 " distinguish a match/highlight from another).
 " This way, we could restore our highlights even after quitting Vim.
 "}}}
+" TODO: Make `-hc` dot repeatable.{{{
+"
+" It may look like it already is, but it's not.
+" Press `-hiw` on 3 different words, then delete a line by pressing `dd`.
+" Press `-hc` on a highlighted word, then press dot on another one.
+" The highlight on the second word is not removed; instead a line is removed.
+"}}}
 
 
 " Settings {{{1
@@ -78,7 +85,7 @@ let g:quickhl_manual_colors = [
 " Mappings {{{1
 
 " highlight word under cursor
-" highlight word under cursor, adding boundaries (\< word \>)
+" highlight word under cursor, adding boundaries (`\<word\>`)
 " highlight visual selection
 " highlight area you {motion}ed or text-object
 nno <silent><unique> -hg* :<c-u>call quickhl#manual#this('n')<cr>
