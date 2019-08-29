@@ -105,6 +105,8 @@ xno <silent><unique> -H  :<c-u>call quickhl#manual#clear_this('v')<cr>
 " toggle global lock
 nno <silent><unique> coH :<c-u>call quickhl#manual#lock_toggle()<cr>
 
+nno <silent><unique> -h? :<c-u>call quickhl#show_help()<cr>
+
 " Commands {{{1
 
 com!                QuickhlManualEnable  :call quickhl#manual#enable()
