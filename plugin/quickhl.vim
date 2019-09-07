@@ -60,7 +60,12 @@ let g:loaded_quickhl = 1
 " Press `-hc` on a highlighted word, then press dot on another one.
 " The highlight on the second word is not removed; instead a line is removed.
 "}}}
-
+" TODO: Allow the user to choose the color used for the next highlight.{{{
+"
+" In mappings, we could use a count.
+" For example, if we press `2-h_`, the current line would be highlighted in blue.
+" But if we had pressed `3-h_`, the current line would have been highlighted in green.
+"}}}
 
 " Settings {{{1
 
@@ -84,14 +89,19 @@ let g:quickhl_manual_colors = [
 
 " Mappings {{{1
 
-" highlight word under cursor
-" highlight word under cursor, adding boundaries (`\<word\>`)
-" highlight visual selection
-" highlight area you {motion}ed or text-object
+" highlight:{{{
+"
+"    - word under cursor
+"    - word under cursor, adding boundaries (`\<word\>`)
+"    - visual selection
+"    - area you {motion}ed or text-object
+"    - current line
+"}}}
 nno <silent><unique> -hg* :<c-u>call quickhl#manual#this('n')<cr>
 nno <silent><unique> -h*  :<c-u>call quickhl#manual#this_whole_word()<cr>
 xno <silent><unique> -h   :<c-u>call quickhl#manual#this('v')<cr>
 nno <silent><unique> -h   :<c-u>set opfunc=quickhl#manual#this_motion<cr>g@
+nno <silent><unique> -hh  :<c-u>set opfunc=quickhl#manual#this_motion<bar>exe 'norm! '..v:count1..'g@_'<cr>
 " This last feature relies on the 'vim-operator-user' plugin:
 " https://github.com/kana/vim-operator-user
 
