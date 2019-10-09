@@ -5,7 +5,7 @@ fu! s:decho(msg) abort "{{{1
 endfu
 
 fu! s:is_cmdwin() abort "{{{1
-    return bufname('%') ==# '[Command Line]'
+    return bufname('%') is# '[Command Line]'
 endfu
 
 fu! s:exe(cmd) abort "{{{1
@@ -104,7 +104,7 @@ endfu
 
 fu! s:manual.index_of(pattern) abort "{{{1
     for n in range(len(self.colors))
-        if self.colors[n].pattern ==# a:pattern
+        if self.colors[n].pattern is# a:pattern
             return n
         endif
     endfor
