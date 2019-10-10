@@ -165,12 +165,12 @@ fu! quickhl#manual#clear_this(mode) abort "{{{1
         \ a:mode is# 'v' ? quickhl#get_selected_text() :
         \ ''
     if pattern is# '' | return | endif
-    let l:pattern_et = quickhl#escape(pattern)
-    let l:pattern_ew = '\<'..quickhl#escape(pattern)..'\>'
-    if s:manual.index_of(l:pattern_et) != -1
-        call s:manual.del(l:pattern_et, 1)
-    elseif s:manual.index_of(l:pattern_ew) != -1
-        call s:manual.del(l:pattern_ew, 1)
+    let pattern_et = quickhl#escape(pattern)
+    let pattern_ew = '\<'..quickhl#escape(pattern)..'\>'
+    if s:manual.index_of(pattern_et) != -1
+        call s:manual.del(pattern_et, 1)
+    elseif s:manual.index_of(pattern_ew) != -1
+        call s:manual.del(pattern_ew, 1)
     endif
     call quickhl#manual#refresh()
 endfunction
