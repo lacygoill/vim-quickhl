@@ -1,4 +1,4 @@
-fu! quickhl#show_help() abort "{{{1
+fu quickhl#show_help() abort "{{{1
     " TODO: Include help about Ex commands, and show help in a scratch buffer.
     " Take inspiration from vim-cheat40 for the scratch buffer.
     let help =<< trim END
@@ -15,7 +15,7 @@ fu! quickhl#show_help() abort "{{{1
     echo join(help, "\n")
 endfu
 
-fu! quickhl#get_selected_text() abort "{{{1
+fu quickhl#get_selected_text() abort "{{{1
     let save_z = getreg('z', 1)
     let save_z_type = getregtype('z')
     try
@@ -26,21 +26,21 @@ fu! quickhl#get_selected_text() abort "{{{1
     endtry
 endfu
 
-fu! quickhl#warn(error) abort "{{{1
+fu quickhl#warn(error) abort "{{{1
     echohl WarningMsg
     echom 'quickhl:  '..a:error
     echohl None
 endfu
 
-fu! quickhl#escape(pattern) abort "{{{1
+fu quickhl#escape(pattern) abort "{{{1
     return escape(a:pattern, '\/~ .*^[''$')
 endfu
 
-fu! quickhl#our_match(pattern) abort "{{{1
+fu quickhl#our_match(pattern) abort "{{{1
     return filter(getmatches(), {_,v -> v.group =~# a:pattern})
 endfu
 
-fu! quickhl#windo(func, obj) abort "{{{1
+fu quickhl#windo(func, obj) abort "{{{1
     let winnum = winnr()
     let pwinnum = winnr('#')
     " echo [pwinnum, winnum]
