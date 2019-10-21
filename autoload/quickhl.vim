@@ -2,15 +2,15 @@ fu quickhl#show_help() abort "{{{1
     " TODO: Include help about Ex commands, and show help in a scratch buffer.
     " Take inspiration from vim-cheat40 for the scratch buffer.
     let help =<< trim END
-    -h*     highlight word under cursor        N
-    -hg*    highlight unbounded word           N
-    -h      highlight motion or text-object    N
-    -hc     clear highlighting under cursor    N
-    -hC     clear all highlighting             N
-    coH     toggle global lock                 N
+        -h*     highlight word under cursor        N
+        -hg*    highlight unbounded word           N
+        -h      highlight motion or text-object    N
+        -hc     clear highlighting under cursor    N
+        -hC     clear all highlighting             N
+        coH     toggle global lock                 N
 
-    -h      highlight selection                X
-    -H      clear highlighting on selection    X
+        -h      highlight selection                X
+        -H      clear highlighting on selection    X
     END
     echo join(help, "\n")
 endfu
