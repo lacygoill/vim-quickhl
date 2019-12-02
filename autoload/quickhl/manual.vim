@@ -12,7 +12,6 @@ fu s:exe(cmd) abort "{{{1
     call s:decho("[cmd] " . a:cmd)
     exe a:cmd
 endfu
-
 "}}}1
 
 let s:manual = {
@@ -138,7 +137,6 @@ fu s:manual.list() abort "{{{1
         echohl None
     endfor
 endfu
-
 " }}}1
 
 fu quickhl#manual#this(mode) abort "{{{1
