@@ -35,11 +35,15 @@ let g:loaded_quickhl = 1
 " Which is not  really correct, because if there are  several matches, they will
 " ALL be highlighted; not just the one we selected.
 " Also, it could highlight matches where the lines are broken in different ways.
-"}}}
-" TODO: I don't like the plugin highlighting all windows.{{{
 "
-" I would prefer it to affect only the current window.
-" And maybe all the others via an option, command argument, ...
+" Update: I think  text properties  could fix  this issue  because they  are not
+" based on regexes but on positions.
+"}}}
+" TODO: I don't like the plugin highlighting all buffers.{{{
+"
+" I would prefer it to affect only the current buffer.
+"
+" Update: Text properties could fix this issue.
 "}}}
 " TODO: Add a command to populate the loclist with the positions matching the first character of all the matches.{{{
 "
@@ -52,6 +56,10 @@ let g:loaded_quickhl = 1
 " restore the highlights  (use the context key  of each entry in  the loclist to
 " distinguish a match/highlight from another).
 " This way, we could restore our highlights even after quitting Vim.
+"
+" Update: The   location  list   is  unreliable,   because  it   doesn't  follow
+" the  text   after  an  edit.   Try   to  use  text  properties   in  Vim,  and
+" `nvim_buf_set_extmark()` / `nvim_buf_get_extmark_by_id()` in Nvim.
 "}}}
 " TODO: Make `-hc` dot repeatable.{{{
 "

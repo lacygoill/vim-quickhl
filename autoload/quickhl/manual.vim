@@ -1,16 +1,5 @@
-fu s:decho(msg) abort "{{{1
-    if g:quickhl_debug
-        echom "[debug] ". a:msg
-    endif
-endfu
-
 fu s:is_cmdwin() abort "{{{1
     return bufname('%') is# '[Command Line]'
-endfu
-
-fu s:exe(cmd) abort "{{{1
-    call s:decho("[cmd] " . a:cmd)
-    exe a:cmd
 endfu
 "}}}1
 
@@ -20,14 +9,6 @@ let s:manual = {
 \ 'locked': 0,
 \ }
 
-fu s:manual.dump() abort "{{{1
-    if !exists("*PP")
-        echoerr "need prettyprint.vim"
-        return
-    endif
-    echo PP(self.history)
-endfu
-
 fu s:manual.init() abort "{{{1
     let self.colors = self.read_colors(g:quickhl_manual_colors)
     let self.history = range(len(g:quickhl_manual_colors))
@@ -36,7 +17,7 @@ endfu
 
 fu s:manual.read_colors(list) abort "{{{1
     return map(copy(a:list), '{
-    \ "name": "QuickhlManual" . v:key,
+    \ "name": "QuickhlManual"..v:key,
     \ "val": v:val,
     \ "pattern": "",
     \ "escaped": 0,
@@ -44,16 +25,11 @@ fu s:manual.read_colors(list) abort "{{{1
 endfu
 
 fu s:manual.init_highlight() abort "{{{1
-    for color in self.colors
-        exe 'highlight ' . color.name . ' ' . color.val
-    endfor
+    call map(copy(self.colors), 'execute("hi "..v:val.name.." "..v:val.val)')
 endfu
 
 fu s:manual.set() abort "{{{1
-    " call map(copy(self.colors), 'matchadd(v:val.name, v:val.pattern)')
-    for color in self.colors
-        call matchadd(color.name, color.pattern, 10)
-    endfor
+    call map(copy(self.colors), 'matchadd(v:val.name, v:val.pattern, 10)')
 endfu
 
 fu s:manual.clear() abort "{{{1
@@ -71,25 +47,21 @@ endfu
 
 fu s:manual.refresh() abort "{{{1
     call self.clear()
-    if self.locked || ( exists("w:quickhl_manual_lock") && w:quickhl_manual_lock )
+    if self.locked || ( exists('w:quickhl_manual_lock') && w:quickhl_manual_lock )
         return
     endif
     call self.set()
 endfu
 
 fu s:manual.show_colors() abort "{{{1
-    for color in self.colors
-        call s:exe("highlight " . color.name)
-    endfor
+    call map(copy(self.colors), "execute('hi '..v:val.name, '')")
 endfu
 
 fu s:manual.add(pattern, escaped) abort "{{{1
     let pattern = a:escaped ? a:pattern : quickhl#escape(a:pattern)
     if ( s:manual.index_of(pattern) >= 0 )
-        call s:decho("duplicate: " . pattern)
         return
     endif
-    call s:decho("new: " . pattern)
     let i = self.next_index()
     let self.colors[i].pattern = pattern
     call add(self.history, i)
@@ -114,9 +86,7 @@ fu s:manual.del(pattern, escaped) abort "{{{1
     let pattern = a:escaped ? a:pattern : quickhl#escape(a:pattern)
 
     let index = self.index_of(pattern)
-    call s:decho("[del ]: " . index)
     if index == -1
-        call s:decho("Can't find for '" . pattern . "'" )
         return
     endif
     call self.del_by_index(index)
@@ -132,8 +102,8 @@ endfu
 fu s:manual.list() abort "{{{1
     for idx in range(len(self.colors))
         let color = self.colors[idx]
-        exe "echohl " . color.name
-        echo printf("%2d: ", idx) . color.pattern
+        exe 'echohl '..color.name
+        echo printf('%2d: ', idx)..color.pattern
         echohl None
     endfor
 endfu
@@ -144,9 +114,8 @@ fu quickhl#manual#this(mode) abort "{{{1
     let pattern =
     \ a:mode == 'n' ? expand('<cword>') :
     \ a:mode == 'v' ? quickhl#get_selected_text() :
-    \ ""
+    \ ''
     if pattern == '' | return | endif
-    " call s:decho("[toggle] " . pattern)
     call quickhl#manual#add_or_del(pattern, 0)
 endfu
 
@@ -204,7 +173,7 @@ fu quickhl#manual#unlock_window() abort "{{{1
 endfu
 
 fu quickhl#manual#lock_window_toggle() abort "{{{1
-    if !exists("w:quickhl_manual_lock")
+    if !exists('w:quickhl_manual_lock')
         let w:quickhl_manual_lock = 0
     endif
     let w:quickhl_manual_lock = !w:quickhl_manual_lock
@@ -236,7 +205,7 @@ endfu
 fu quickhl#manual#del(pattern, escaped) abort "{{{1
     if empty(a:pattern)
         call s:manual.list()
-        let index = input("index to delete: ")
+        let index = input('index to delete: ')
         if empty(index) | return | endif
         call s:manual.del_by_index(index)
     else
@@ -275,10 +244,6 @@ fu quickhl#manual#refresh() abort "{{{1
     call quickhl#windo(s:manual.refresh, s:manual)
 endfu
 
-fu quickhl#manual#status() abort "{{{1
-    echo s:manual.enabled
-endfu
-
 fu quickhl#manual#init_highlight() abort "{{{1
     call s:manual.init_highlight()
 endfu
@@ -288,25 +253,24 @@ fu quickhl#manual#this_motion(type) abort "{{{1
     let sel_save = &sel
 
     try
-        let lnum_beg = line("'[")
-        let lnum_end = line("']")
-        for n in range(lnum_beg, lnum_end)
-            let _s = getline(n)
-            let s = {
-            \  'all':     _s,
-            \  'between': _s[col("'[")-1 : col("']")-1],
-            \  'pos2end': _s[col("'[")-1 : -1],
-            \  'beg2pos': _s[ : col("']")-1],
-            \  }
+        let [start, end] = [line("'["), line("']")]
+        for lnum in range(start, end)
+            let _line = getline(lnum)
+            let line = {
+                \ 'all': _line,
+                \ 'between': _line[col("'[")-1 : col("']")-1],
+                \ 'pos2end': _line[col("'[")-1 : -1],
+                \ 'beg2pos': _line[ : col("']")-1],
+                \ }
 
             if a:type is# 'char'
                 let str =
-                \ lnum_beg == lnum_end ? s.between :
-                \ n        == lnum_beg ? s.pos2end :
-                \ n        == lnum_end ? s.beg2pos :
-                \                        s.all
-            elseif a:type is# 'line'  | let str = s.all
-            elseif a:type is# 'block' | let str = s.between
+                    \ start == end   ? line.between :
+                    \ lnum  == start ? line.pos2end :
+                    \ lnum  == end   ? line.beg2pos :
+                    \                  line.all
+            elseif a:type is# 'line'  | let str = line.all
+            elseif a:type is# 'block' | let str = line.between
             endif
 
             call quickhl#manual#add_or_del(str, 0)

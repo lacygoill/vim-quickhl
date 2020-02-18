@@ -45,7 +45,7 @@ fu quickhl#windo(func, obj) abort "{{{1
 
     " Unexpectedly, this event is happen before buffer is not shown on window when invoke `pedit file`.
     " So here I will skip unxexisting buffer(which return `-1`) to avoid E994 error.
-    if bufwinid('') ==# -1
+    if bufwinid('') == -1
         return
     endif
     call map(range(1, winnr('$')),
