@@ -5,45 +5,30 @@ if exists('g:loaded_quickhl')
 endif
 let g:loaded_quickhl = 1
 
+" TODO: Don't highlight *all* the matches.  Just the one under the cursor.
+" TODO: Implement a "global" command which would extend the last highlighting to *all* the matches.{{{
+"
+" In fact, it should toggle between *all* the matches, and the single match under the cursor.
+" `M-m M-m` would be a good fit as a mapping.
+" But what would we use for highlighting a line?  `M-m _`?  `M-m M`?
+"}}}
+" TODO: Implement an "undo" command which would undo the last highlighting.
+" FIXME: Press `M-m ^` on the first line of a file.
+" Sometimes, nothing is highlighted; sometimes the second line is highlighted.
+
 " TODO: We have no way to expand a match.{{{
 "
 " I.e. we can highlight a line:
 "
-"     - h _
+"     M-m _
 "
 " We can highlight another:
 "
-"     - h _
+"     M-m _
 "
 " But they will be colored differently.
 "
-" Maybe we could use `- H` as another prefix to add/remove
-" a match to/from another.
-"}}}
-" TODO: We can't highlight a multi-line visual selection:{{{
-"
-"     foo
-"     bar
-"     baz
-"     qux
-"     norf
-"
-" For the moment, we need to do:
-"
-"     QuickhlManualAdd! ^foo.*\n\_.\{-}\nnorf.*
-"
-" Which is not  really correct, because if there are  several matches, they will
-" ALL be highlighted; not just the one we selected.
-" Also, it could highlight matches where the lines are broken in different ways.
-"
-" Update: I think  text properties  could fix  this issue  because they  are not
-" based on regexes but on positions.
-"}}}
-" TODO: I don't like the plugin highlighting all buffers.{{{
-"
-" I would prefer it to affect only the current buffer.
-"
-" Update: Text properties could fix this issue.
+" Find another prefix to add/remove a match to/from another?
 "}}}
 " TODO: Add a command to populate the loclist with the positions matching the first character of all the matches.{{{
 "
@@ -61,23 +46,21 @@ let g:loaded_quickhl = 1
 " the  text   after  an  edit.   Try   to  use  text  properties   in  Vim,  and
 " `nvim_buf_set_extmark()` / `nvim_buf_get_extmark_by_id()` in Nvim.
 "}}}
-" TODO: Make `-hc` dot repeatable.{{{
+" TODO: Make `<m-m>c` dot repeatable.{{{
 "
 " It may look like it already is, but it's not.
-" Press `-hiw` on 3 different words, then delete a line by pressing `dd`.
-" Press `-hc` on a highlighted word, then press dot on another one.
+" Press `<m-m>iw` on 3 different words, then delete a line by pressing `dd`.
+" Press `<m-m>c` on a highlighted word, then press dot on another one.
 " The highlight on the second word is not removed; instead a line is removed.
 "}}}
 " TODO: Allow the user to choose the color used for the next highlight.{{{
 "
 " In mappings, we could use a count.
-" For example, if we press `2-h_`, the current line would be highlighted in blue.
-" But if we had pressed `3-h_`, the current line would have been highlighted in green.
+" For example, if we press `2<m-m>_`, the current line would be highlighted in blue.
+" But if we had pressed `3<m-m>_`, the current line would have been highlighted in green.
 "}}}
 
 " Settings {{{1
-
-let g:quickhl_debug = 0
 
 let g:quickhl_manual_colors =<< trim END
     cterm=bold ctermfg=16 ctermbg=153 gui=bold guifg=#ffffff guibg=#0a7383
@@ -102,44 +85,47 @@ END
 "    - word under cursor
 "    - word under cursor, adding boundaries (`\<word\>`)
 "    - visual selection
-"    - area you {motion}ed or text-object
+"    - text covered by a motion or text-object
 "    - current line
 "}}}
-nno <silent><unique> -hg* :<c-u>call quickhl#manual#this('n')<cr>
-nno <silent><unique> -h*  :<c-u>call quickhl#manual#this_whole_word()<cr>
-xno <silent><unique> -h   :<c-u>call quickhl#manual#this('v')<cr>
-nno <silent><unique> -h   :<c-u>set opfunc=quickhl#manual#this_motion<cr>g@
-nno <silent><unique> -hh  :<c-u>set opfunc=quickhl#manual#this_motion<bar>exe 'norm! '..v:count1..'g@_'<cr>
-" This last feature relies on the 'vim-operator-user' plugin:
-" https://github.com/kana/vim-operator-user
+nno <silent><unique> <m-m>g*    :<c-u>call quickhl#word('n')<cr>
+nno <silent><unique> <m-m>*     :<c-u>call quickhl#whole_word()<cr>
+xno <silent><unique> <m-m>      :<c-u>call quickhl#word('v')<cr>
+nno <silent><unique> <m-m>      :<c-u>set opfunc=quickhl#op<cr>g@
+nno <silent><unique> <m-m><m-m> :<c-u>set opfunc=quickhl#op<bar>exe 'norm! '..v:count1..'g@_'<cr>
 
 " clear all highlights
+nno <silent><unique> <m-m>C :<c-u>call quickhl#reset()<cr>
 " clear highlight of the word under the cursor
+nno <silent><unique> <m-m>c :<c-u>call quickhl#clear_this('n')<cr>
 " clear highlight of the visual selection
-nno <silent><unique> -hC :<c-u>call quickhl#manual#reset()<cr>
-nno <silent><unique> -hc :<c-u>call quickhl#manual#clear_this('n')<cr>
-xno <silent><unique> -H  :<c-u>call quickhl#manual#clear_this('v')<cr>
+xno <silent><unique> m<m-m> :<c-u>call quickhl#clear_this('v')<cr>
+" TODO: I don't like this rhs (`m<m-m>`).
+" Besides, it seems the whole mapping is useless.
+" You can press `M-m` on the same visual selection to clear a highlight.
+" What's the point of `#clear_this()` in visual mode?
 
 " toggle global lock
-nno <silent><unique> coH :<c-u>call quickhl#manual#lock_toggle()<cr>
+nno <silent><unique> co<m-m> :<c-u>call quickhl#lock_toggle()<cr>
 
-nno <silent><unique> -h? :<c-u>call quickhl#show_help()<cr>
+nno <silent><unique> <m-m>? :<c-u>call quickhl#show_help()<cr>
 
 " Commands {{{1
 
-com                QuickhlManualEnable  :call quickhl#manual#enable()
-com                QuickhlManualDisable :call quickhl#manual#disable()
+com -bar QuickhlManualEnable call quickhl#enable()
+com -bar QuickhlManualDisable call quickhl#disable()
 
-com                QuickhlManualList    :call quickhl#manual#list()
-com                QuickhlManualReset   :call quickhl#manual#reset()
-com                QuickhlManualColors  :call quickhl#manual#colors()
-com -bang -nargs=1 QuickhlManualAdd     :call quickhl#manual#add(<q-args>,<bang>0)
-com -bang -nargs=* QuickhlManualDelete  :call quickhl#manual#del(<q-args>,<bang>0)
-com                QuickhlManualLock    :call quickhl#manual#lock()
+com -bar QuickhlManualList call quickhl#list()
+com -bar QuickhlManualReset call quickhl#reset()
+com -bar QuickhlManualColors call quickhl#colors()
 
-com QuickhlManualUnlock                 :call quickhl#manual#unlock()
-com QuickhlManualLockToggle             :call quickhl#manual#lock_toggle()
-com QuickhlManualLockWindow             :call quickhl#manual#lock_window()
-com QuickhlManualUnlockWindow           :call quickhl#manual#unlock_window()
-com QuickhlManualLockWindowToggle       :call quickhl#manual#lock_window_toggle()
+com -bar -bang -nargs=1 QuickhlManualAdd call quickhl#add(<q-args>,<bang>0)
+com -bar -bang -nargs=* QuickhlManualDelete call quickhl#del(<q-args>,<bang>0)
+com -bar QuickhlManualLock call quickhl#lock()
+
+com -bar QuickhlManualUnlock call quickhl#unlock()
+com -bar QuickhlManualLockToggle call quickhl#lock_toggle()
+com -bar QuickhlManualLockWindow call quickhl#lock_window()
+com -bar QuickhlManualUnlockWindow call quickhl#unlock_window()
+com -bar QuickhlManualLockWindowToggle call quickhl#lock_window_toggle()
 

@@ -70,15 +70,16 @@ FAQ                                                                *quickhl-faq*
 
 How to clear a highlight installed from a visual selection?
 
-Reselect the same selection and press `-H`.
+Reselect the same selection and press `<m-m>`.
 
-Note  that you  could also  press `-h`,  but if  you've not  selected the  right
-selection (e.g. off by one character), `-h` will not clear any highlight.
-Instead,  it  will  add a  new  one;  even  if  it results  in  two  overlapping
+Note that you  could also press `<m-m>`  from normal mode, but if  the motion or
+text-object you provide to  the operator does not cover the  exact same text, no
+highlight will be cleared.
+Instead,  a new  one  will be  added;  even  if it  results  in two  overlapping
 highlights. This can be confusing, and difficult to undo.
 
 
-How to clear a highlight installed via the `-h` operator?
+How to clear a highlight installed via the `<m-m>` operator?
 
-Select the same text-object/motion and press `-H`.
+Select the same text-object/motion and press `m<m-m>`.
 
