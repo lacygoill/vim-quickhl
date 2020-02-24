@@ -31,11 +31,6 @@ endfu
 fu s:manual.set() abort "{{{1
     let view = winsaveview()
 
-    " FIXME: Doesn't work as expected when we press `m+iw` on the very first word of a file.{{{
-    "
-    " All occurrences are correctly highlighted, except the first one under the cursor.
-    " It's probably due to the flags passed to `search()`.
-    "}}}
     for color in self.colors
         " avoid `E35` when @/ is empty
         " TODO: is it the right fix?{{{
@@ -346,13 +341,34 @@ endfu
 
 fu s:highlight(pat, name) abort "{{{2
     if has('nvim')
-        " TODO: support Nvim
+        let id = nvim_create_namespace('quickhl')
+        let flags = 'cW'
+        while search(a:pat, flags)
+            let [lnum, col] = getcurpos()[1:2]
+            let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
+            let flags = 'W'
+            if a:pat !~# '\\n'
+                call nvim_buf_add_highlight(0, id, a:name,
+                    \ lnum-1, col-1, searchpos(a:pat..'\zs', 'cn')[1]-1)
+            else
+                let lines = split(a:pat, '\\n')
+                for i in range(len(lines))
+                    let col_start = i == 0 ? col-1 : 0
+                    let col_end = i == len(lines) - 1 ? end_col : col([lnum+i, '$'])
+                    call nvim_buf_add_highlight(0, id, a:name,
+                        \ lnum-1+i, col_start, col_end)
+                endfor
+            endif
+        endwhile
     else
         sil! call prop_type_add(a:name, {'highlight': a:name, 'bufnr': bufnr('%')})
         call cursor(1, 1)
-        while search(a:pat, 'W')
+        let flags = 'cW'
+        while search(a:pat, flags)
+            let [lnum, col] = getcurpos()[1:2]
             let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
-            call prop_add(line('.'), col('.'), {
+            let flags = 'W'
+            call prop_add(lnum, col, {
                 \ 'end_lnum': end_lnum,
                 \ 'end_col': end_col,
                 \ 'type': a:name,
