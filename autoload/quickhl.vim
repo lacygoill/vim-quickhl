@@ -298,7 +298,7 @@ fu quickhl#op(type) abort "{{{2
         let @" = substitute(@", '\n$', '', '')
         call s:add_or_del(@", 0)
     catch
-        return lg#catch_error()
+        return lg#catch()
     finally
         let [&cb, &sel]  = [cb_save, sel_save]
         call call('setreg', reg_save)
@@ -386,7 +386,7 @@ fu s:get_selected_text() abort "{{{2
         sil norm! gvy
         return @"
     catch
-        return lg#catch_error()
+        return lg#catch()
     finally
         let [&cb, &sel]  = [cb_save, sel_save]
         call call('setreg', reg_save)
