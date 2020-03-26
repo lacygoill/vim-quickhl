@@ -54,14 +54,14 @@ fu s:manual.set() abort "{{{1
     "         fu! Func(name, pat) abort
     "             if a:pat is# '' | return | endif
     "             let bufnr = bufnr('%')
-    "             sil! call prop_type_add(a:name, {'highlight': a:name, 'bufnr': bufnr})
+    "             sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
     "             call cursor(1, 1)
     "             while search(a:pat, 'W')
     "                 let [end_lnum, end_col] = searchpos(a:pat, 'cn')
-    "                 call prop_add(line('.'), col('.'), {
-    "                     \ 'end_lnum': end_lnum,
-    "                     \ 'end_col': end_col,
-    "                     \ 'type': a:name,
+    "                 call prop_add(line('.'), col('.'), #{
+    "                     \ end_lnum: end_lnum,
+    "                     \ end_col: end_col,
+    "                     \ type: a:name,
     "                     \ })
     "             endwhile
     "         endfu
@@ -87,7 +87,7 @@ fu s:manual.clear() abort "{{{1
     " TODO: try to get rid of `sil!`; how to check a text property exists?
     " TODO: This clears all highlights.  How about clearing only the highlight under the cursor? (`m-*`, `x_m-`)
     sil! call map(range(len(g:quickhl_manual_colors)),
-        \ {_,v -> prop_remove({'type': 'QuickhlManual'..v, 'all': v:true})})
+        \ {_,v -> prop_remove(#{type: 'QuickhlManual'..v, all: v:true})})
 endfu
 
 fu s:manual.reset() abort "{{{1
@@ -361,17 +361,17 @@ fu s:highlight(pat, name) abort "{{{2
             endif
         endwhile
     else
-        sil! call prop_type_add(a:name, {'highlight': a:name, 'bufnr': bufnr('%')})
+        sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr('%')})
         call cursor(1, 1)
         let flags = 'cW'
         while search(a:pat, flags)
             let [lnum, col] = getcurpos()[1:2]
             let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
             let flags = 'W'
-            call prop_add(lnum, col, {
-                \ 'end_lnum': end_lnum,
-                \ 'end_col': end_col,
-                \ 'type': a:name,
+            call prop_add(lnum, col, #{
+                \ end_lnum: end_lnum,
+                \ end_col: end_col,
+                \ type: a:name,
                 \ })
         endwhile
     endif
