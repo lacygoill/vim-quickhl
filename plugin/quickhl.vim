@@ -80,35 +80,49 @@ END
 
 " Mappings {{{1
 
-" highlight:{{{
-"
-"    - word under cursor
-"    - word under cursor, adding boundaries (`\<word\>`)
-"    - visual selection
-"    - text covered by a motion or text-object
-"    - current line
-"}}}
-nno <silent><unique> <m-m>g*    :<c-u>call quickhl#word('n')<cr>
-nno <silent><unique> <m-m>*     :<c-u>call quickhl#whole_word()<cr>
-xno <silent><unique> <m-m>      :<c-u>call quickhl#word('v')<cr>
-nno <silent><unique> <m-m>      :<c-u>set opfunc=quickhl#op<cr>g@
-nno <silent><unique> <m-m><m-m> :<c-u>set opfunc=quickhl#op<bar>exe 'norm! '..v:count1..'g@_'<cr>
+if has('nvim') || has('gui_running') || &t_TI =~# "\e[>4;2m"
+    " highlight:{{{
+    "
+    "    - word under cursor
+    "    - word under cursor, adding boundaries (`\<word\>`)
+    "    - visual selection
+    "    - text covered by a motion or text-object
+    "    - current line
+    "}}}
+    nno <silent><unique> <m-m>g*    :<c-u>call quickhl#word('n')<cr>
+    nno <silent><unique> <m-m>*     :<c-u>call quickhl#whole_word()<cr>
+    xno <silent><unique> <m-m>      :<c-u>call quickhl#word('v')<cr>
+    nno <silent><unique> <m-m>      :<c-u>set opfunc=quickhl#op<cr>g@
+    nno <silent><unique> <m-m><m-m> :<c-u>set opfunc=quickhl#op<bar>exe 'norm! '..v:count1..'g@_'<cr>
 
-" clear all highlights
-nno <silent><unique> <m-m>C :<c-u>call quickhl#reset()<cr>
-" clear highlight of the word under the cursor
-nno <silent><unique> <m-m>c :<c-u>call quickhl#clear_this('n')<cr>
-" clear highlight of the visual selection
-xno <silent><unique> m<m-m> :<c-u>call quickhl#clear_this('v')<cr>
-" TODO: I don't like this rhs (`m<m-m>`).
-" Besides, it seems the whole mapping is useless.
-" You can press `M-m` on the same visual selection to clear a highlight.
-" What's the point of `#clear_this()` in visual mode?
+    " clear all highlights
+    nno <silent><unique> <m-m>C :<c-u>call quickhl#reset()<cr>
+    " clear highlight of the word under the cursor
+    nno <silent><unique> <m-m>c :<c-u>call quickhl#clear_this('n')<cr>
+    " clear highlight of the visual selection
+    xno <silent><unique> m<m-m> :<c-u>call quickhl#clear_this('v')<cr>
+    " TODO: I don't like this rhs (`m<m-m>`).
+    " Besides, it seems the whole mapping is useless.
+    " You can press `M-m` on the same visual selection to clear a highlight.
+    " What's the point of `#clear_this()` in visual mode?
 
-" toggle global lock
-nno <silent><unique> co<m-m> :<c-u>call quickhl#lock_toggle()<cr>
+    " toggle global lock
+    nno <silent><unique> co<m-m> :<c-u>call quickhl#lock_toggle()<cr>
 
-nno <silent><unique> <m-m>? :<c-u>call quickhl#show_help()<cr>
+    nno <silent><unique> <m-m>? :<c-u>call quickhl#show_help()<cr>
+else
+    " If you want to change `F24`, you'll need to update `autoload/lg/map.vim`.
+    nno <silent><unique> <f24>g*    :<c-u>call quickhl#word('n')<cr>
+    nno <silent><unique> <f24>*     :<c-u>call quickhl#whole_word()<cr>
+    xno <silent><unique> <f24>      :<c-u>call quickhl#word('v')<cr>
+    nno <silent><unique> <f24>      :<c-u>set opfunc=quickhl#op<cr>g@
+    nno <silent><unique> <f24><f24> :<c-u>set opfunc=quickhl#op<bar>exe 'norm! '..v:count1..'g@_'<cr>
+    nno <silent><unique> <f24>C     :<c-u>call quickhl#reset()<cr>
+    nno <silent><unique> <f24>c     :<c-u>call quickhl#clear_this('n')<cr>
+    xno <silent><unique> m<f24>     :<c-u>call quickhl#clear_this('v')<cr>
+    nno <silent><unique> co<f24>    :<c-u>call quickhl#lock_toggle()<cr>
+    nno <silent><unique> <f24>?     :<c-u>call quickhl#show_help()<cr>
+endif
 
 " Commands {{{1
 
