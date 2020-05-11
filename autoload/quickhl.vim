@@ -44,8 +44,7 @@ fu s:manual.set() abort "{{{1
     endfor
     call winrestview(view)
 
-    augroup quickhl_persist_after_reload
-        au!
+    augroup quickhl_persist_after_reload | au!
         au BufReadPost <buffer> call s:manual.refresh()
     augroup END
 
@@ -261,8 +260,7 @@ fu quickhl#enable() abort "{{{2
     call s:manual.init()
     let s:manual.enabled = 1
 
-    augroup QuickhlManual
-        au!
+    augroup QuickhlManual | au!
         " TODO: Why `VimEnter`?
         au VimEnter * call s:manual.refresh()
         au ColorScheme * call s:init_highlight()
