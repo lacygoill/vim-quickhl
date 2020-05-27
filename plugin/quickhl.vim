@@ -92,8 +92,8 @@ if has('nvim') || has('gui_running') || &t_TI =~# "\e[>4;2m"
     nno <silent><unique> <m-m>g*    :<c-u>call quickhl#word('n')<cr>
     nno <silent><unique> <m-m>*     :<c-u>call quickhl#whole_word()<cr>
     xno <silent><unique> <m-m>      :<c-u>call quickhl#word('v')<cr>
-    nno <silent><unique> <m-m>      :<c-u>set opfunc=quickhl#op<cr>g@
-    nno <silent><unique> <m-m><m-m> :<c-u>set opfunc=quickhl#op<bar>exe 'norm! '..v:count1..'g@_'<cr>
+    nno <expr><unique> <m-m>        quickhl#op()
+    nno <expr><unique> <m-m><m-m>   quickhl#op()..'_'
 
     " clear all highlights
     nno <silent><unique> <m-m>C :<c-u>call quickhl#reset()<cr>
@@ -115,8 +115,8 @@ else
     nno <silent><unique> <f24>g*    :<c-u>call quickhl#word('n')<cr>
     nno <silent><unique> <f24>*     :<c-u>call quickhl#whole_word()<cr>
     xno <silent><unique> <f24>      :<c-u>call quickhl#word('v')<cr>
-    nno <silent><unique> <f24>      :<c-u>set opfunc=quickhl#op<cr>g@
-    nno <silent><unique> <f24><f24> :<c-u>set opfunc=quickhl#op<bar>exe 'norm! '..v:count1..'g@_'<cr>
+    nno <expr><unique> <f24>        quickhl#op()
+    nno <expr><unique> <f24><f24>   quickhl#op()..'_'
     nno <silent><unique> <f24>C     :<c-u>call quickhl#reset()<cr>
     nno <silent><unique> <f24>c     :<c-u>call quickhl#clear_this('n')<cr>
     xno <silent><unique> m<f24>     :<c-u>call quickhl#clear_this('v')<cr>

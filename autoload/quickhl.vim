@@ -278,19 +278,22 @@ fu quickhl#disable() abort "{{{2
     call quickhl#reset()
 endfu
 
-fu quickhl#op(type) abort "{{{2
+fu quickhl#op(...) abort "{{{2
+    if !a:0
+        let &opfunc = 'quickhl#op'
+        return 'g@'
+    endif
+    let type = a:1
     let [cb_save, sel_save] = [&cb, &sel]
     let reg_save = ['"', getreg('"'), getregtype('"')]
     try
         set cb-=unnamed cb-=unnamedplus sel=inclusive
-        if a:type is# 'char'
+        if type is# 'char'
             sil norm! `[v`]y
-        elseif a:type is# 'line'
+        elseif type is# 'line'
             sil norm! '[V']y
-        elseif a:type is# 'block'
+        elseif type is# 'block'
             sil exe "norm! `[\<c-v>`]y"
-        else
-            return
         endif
         " If we operate on a line, don't highlight the first character of the next line.
         let @" = substitute(@", '\n$', '', '')
