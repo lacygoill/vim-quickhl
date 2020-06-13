@@ -42,9 +42,8 @@ let g:loaded_quickhl = 1
 " distinguish a match/highlight from another).
 " This way, we could restore our highlights even after quitting Vim.
 "
-" Update: The   location  list   is  unreliable,   because  it   doesn't  follow
-" the  text   after  an  edit.   Try   to  use  text  properties   in  Vim,  and
-" `nvim_buf_set_extmark()` / `nvim_buf_get_extmark_by_id()` in Nvim.
+" Update: The location  list is unreliable,  because it doesn't follow  the text
+" after an edit.  Try to use text properties in Vim.
 "}}}
 " TODO: Make `<m-m>c` dot repeatable.{{{
 "
@@ -80,7 +79,7 @@ END
 
 " Mappings {{{1
 
-if has('nvim') || has('gui_running') || &t_TI =~# "\e[>4;2m"
+if has('gui_running') || &t_TI =~# "\e\\[>4;[12]m"
     " highlight:{{{
     "
     "    - word under cursor

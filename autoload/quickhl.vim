@@ -49,40 +49,24 @@ fu s:manual.set() abort "{{{1
     augroup END
 
 
-    "     if !has('nvim')
-    "         fu! Func(name, pat) abort
-    "             if a:pat is# '' | return | endif
-    "             let bufnr = bufnr('%')
-    "             sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
-    "             call cursor(1, 1)
-    "             while search(a:pat, 'W')
-    "                 let [end_lnum, end_col] = searchpos(a:pat, 'cn')
-    "                 call prop_add(line('.'), col('.'), #{
-    "                     \ end_lnum: end_lnum,
-    "                     \ end_col: end_col,
-    "                     \ type: a:name,
-    "                     \ })
-    "             endwhile
-    "         endfu
-    "         call map(copy(self.colors), {_,v -> Func(v.name, v.pat)})
-    "     else
-    "         let id = nvim_create_namespace(v.name)
+    "     fu! Func(name, pat) abort
+    "         if a:pat is# '' | return | endif
+    "         let bufnr = bufnr('%')
+    "         sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
     "         call cursor(1, 1)
-    "         while search(v.pat, 'W')
-    "             call nvim_buf_add_highlight(0, id, v.name,
-    "                 \ line('.')-1, col('.'), searchpos(v.pat, 'cn')[1]-1)
+    "         while search(a:pat, 'W')
+    "             let [end_lnum, end_col] = searchpos(a:pat, 'cn')
+    "             call prop_add(line('.'), col('.'), #{
+    "                 \ end_lnum: end_lnum,
+    "                 \ end_col: end_col,
+    "                 \ type: a:name,
+    "                 \ })
     "         endwhile
-    "     endif
+    "     endfu
+    "     call map(copy(self.colors), {_,v -> Func(v.name, v.pat)})
 endfu
 
 fu s:manual.clear() abort "{{{1
-    " TODO: Support Nvim.{{{
-    "
-    " Make sure  it correctly  removes all highlighting  when there  are several
-    " highlighted texts on the same line.
-    " A good  test is to highlight  just a space  on a line with  several spaces
-    " (`M-m l`); make sure `M-m C` gets rid of all highlighted spaces.
-    "}}}
     " TODO: try to get rid of `sil!`; how to check a text property exists?
     " TODO: This clears all highlights.  How about clearing only the highlight under the cursor? (`m-*`, `x_m-`)
     sil! call map(range(len(g:quickhl_manual_colors)),
@@ -341,41 +325,19 @@ fu s:init_highlight() abort "{{{2
 endfu
 
 fu s:highlight(pat, name) abort "{{{2
-    if has('nvim')
-        let id = nvim_create_namespace('quickhl')
-        let flags = 'cW'
-        while search(a:pat, flags)
-            let [lnum, col] = getcurpos()[1:2]
-            let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
-            let flags = 'W'
-            if a:pat !~# '\\n'
-                call nvim_buf_add_highlight(0, id, a:name,
-                    \ lnum-1, col-1, searchpos(a:pat..'\zs', 'cn')[1]-1)
-            else
-                let lines = split(a:pat, '\\n')
-                for i in range(len(lines))
-                    let col_start = i == 0 ? col-1 : 0
-                    let col_end = i == len(lines) - 1 ? end_col : col([lnum+i, '$'])
-                    call nvim_buf_add_highlight(0, id, a:name,
-                        \ lnum-1+i, col_start, col_end)
-                endfor
-            endif
-        endwhile
-    else
-        sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr('%')})
-        call cursor(1, 1)
-        let flags = 'cW'
-        while search(a:pat, flags)
-            let [lnum, col] = getcurpos()[1:2]
-            let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
-            let flags = 'W'
-            call prop_add(lnum, col, #{
-                \ end_lnum: end_lnum,
-                \ end_col: end_col,
-                \ type: a:name,
-                \ })
-        endwhile
-    endif
+    sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr('%')})
+    call cursor(1, 1)
+    let flags = 'cW'
+    while search(a:pat, flags)
+        let [lnum, col] = getcurpos()[1:2]
+        let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
+        let flags = 'W'
+        call prop_add(lnum, col, #{
+            \ end_lnum: end_lnum,
+            \ end_col: end_col,
+            \ type: a:name,
+            \ })
+    endwhile
 endfu
 "}}}1
 " Util {{{1
