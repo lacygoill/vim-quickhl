@@ -269,7 +269,7 @@ fu quickhl#op(...) abort "{{{2
     endif
     let type = a:1
     let [cb_save, sel_save] = [&cb, &sel]
-    let reg_save = ['"', getreg('"'), getregtype('"')]
+    let reg_save = getreginfo('"')
     try
         set cb-=unnamed cb-=unnamedplus sel=inclusive
         if type is# 'char'
@@ -285,8 +285,8 @@ fu quickhl#op(...) abort "{{{2
     catch
         return lg#catch()
     finally
-        let [&cb, &sel]  = [cb_save, sel_save]
-        call call('setreg', reg_save)
+        let [&cb, &sel] = [cb_save, sel_save]
+        call setreg('"', reg_save)
     endtry
 endfu
 
@@ -343,7 +343,7 @@ endfu
 " Util {{{1
 fu s:get_selected_text() abort "{{{2
     let [cb_save, sel_save] = [&cb, &sel]
-    let reg_save = ['"', getreg('"'), getregtype('"')]
+    let reg_save = getreginfo('"')
     try
         set cb-=unnamed cb-=unnamedplus sel=inclusive
         sil norm! gvy
@@ -352,7 +352,7 @@ fu s:get_selected_text() abort "{{{2
         return lg#catch()
     finally
         let [&cb, &sel]  = [cb_save, sel_save]
-        call call('setreg', reg_save)
+        call setreg('"', reg_save)
     endtry
 endfu
 
