@@ -271,7 +271,7 @@ fu quickhl#op(...) abort "{{{2
     let [cb_save, sel_save] = [&cb, &sel]
     let reg_save = getreginfo('"')
     try
-        set cb-=unnamed cb-=unnamedplus sel=inclusive
+        set cb= sel=inclusive
         if type is# 'char'
             sil norm! `[v`]y
         elseif type is# 'line'
@@ -345,7 +345,7 @@ fu s:get_selected_text() abort "{{{2
     let [cb_save, sel_save] = [&cb, &sel]
     let reg_save = getreginfo('"')
     try
-        set cb-=unnamed cb-=unnamedplus sel=inclusive
+        set cb= sel=inclusive
         sil norm! gvy
         return @"
     catch
