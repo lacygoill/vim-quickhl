@@ -145,9 +145,11 @@ endfu
 " Interface {{{1
 fu quickhl#word(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
+    " TODO: Should we handle the pattern as a list to preserve possible NULs?
+    " If so, remove `->join("\n")` every time we've invoked `lg#getselection()` in this plugin.
     let pat =
         \ a:mode == 'n' ? expand('<cword>') :
-        \ a:mode == 'v' ? s:get_selected_text() :
+        \ a:mode == 'v' ? lg#getselection()->join("\n") :
         \ ''
     if pat == '' | return | endif
     call s:add_or_del(pat, 0)
@@ -163,7 +165,7 @@ fu quickhl#clear_this(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     let pat =
         \ a:mode is# 'n' ? expand('<cword>') :
-        \ a:mode is# 'v' ? s:get_selected_text() :
+        \ a:mode is# 'v' ? lg#getselection()->join("\n") :
         \ ''
     if pat is# '' | return | endif
     let pat_et = s:escape(pat)
@@ -262,32 +264,16 @@ fu quickhl#disable() abort "{{{2
     call quickhl#reset()
 endfu
 
-fu quickhl#op(...) abort "{{{2
-    if !a:0
-        let &opfunc = 'quickhl#op'
-        return 'g@'
-    endif
-    let type = a:1
-    let [cb_save, sel_save] = [&cb, &sel]
-    let reg_save = getreginfo('"')
-    try
-        set cb= sel=inclusive
-        if type is# 'char'
-            sil norm! `[v`]y
-        elseif type is# 'line'
-            sil norm! '[V']y
-        elseif type is# 'block'
-            sil exe "norm! `[\<c-v>`]y"
-        endif
-        " If we operate on a line, don't highlight the first character of the next line.
-        let @" = substitute(@", '\n$', '', '')
-        call s:add_or_del(@", 0)
-    catch
-        return lg#catch()
-    finally
-        let [&cb, &sel] = [cb_save, sel_save]
-        call setreg('"', reg_save)
-    endtry
+fu quickhl#op() abort "{{{2
+    let &opfunc = 'lg#opfunc'
+    let g:opfunc_core = 'quickhl#op_core'
+    return 'g@'
+endfu
+
+fu quickhl#op_core(type) abort
+    " If we operate on a line, don't highlight the first character of the next line.
+    let @" = substitute(@", '\n$', '', '')
+    call s:add_or_del(@", 0)
 endfu
 
 call s:manual.init()
@@ -341,21 +327,6 @@ fu s:highlight(pat, name) abort "{{{2
 endfu
 "}}}1
 " Util {{{1
-fu s:get_selected_text() abort "{{{2
-    let [cb_save, sel_save] = [&cb, &sel]
-    let reg_save = getreginfo('"')
-    try
-        set cb= sel=inclusive
-        sil norm! gvy
-        return @"
-    catch
-        return lg#catch()
-    finally
-        let [&cb, &sel]  = [cb_save, sel_save]
-        call setreg('"', reg_save)
-    endtry
-endfu
-
 fu s:escape(pat) abort "{{{2
     return '\V'..substitute(escape(a:pat, '\'), "\n", '\\n', 'g')
 endfu
