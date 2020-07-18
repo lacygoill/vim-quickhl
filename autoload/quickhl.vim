@@ -266,7 +266,9 @@ endfu
 
 fu quickhl#op() abort "{{{2
     let &opfunc = 'lg#opfunc'
-    let g:opfunc_core = 'quickhl#op_core'
+    let g:opfunc = {
+        \ 'core': 'quickhl#op_core',
+        \ }
     return 'g@'
 endfu
 
