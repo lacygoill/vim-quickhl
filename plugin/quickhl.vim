@@ -88,11 +88,11 @@ if has('gui_running') || &t_TI =~# "\e\\[>4;[12]m"
     "    - text covered by a motion or text-object
     "    - current line
     "}}}
-    nno <silent><unique> <m-m>g*    :<c-u>call quickhl#word('n')<cr>
-    nno <silent><unique> <m-m>*     :<c-u>call quickhl#whole_word()<cr>
-    xno <silent><unique> <m-m>      :<c-u>call quickhl#word('v')<cr>
-    nno <expr><unique> <m-m>        quickhl#op()
-    nno <expr><unique> <m-m><m-m>   quickhl#op()..'_'
+    nno <silent><unique> <m-m>g* :<c-u>call quickhl#word('n')<cr>
+    nno <silent><unique> <m-m>* :<c-u>call quickhl#whole_word()<cr>
+    xno <silent><unique> <m-m> :<c-u>call quickhl#word('v')<cr>
+    nno <expr><unique> <m-m> quickhl#op()
+    nno <expr><unique> <m-m><m-m> quickhl#op() .. '_'
 
     " clear all highlights
     nno <silent><unique> <m-m>C :<c-u>call quickhl#reset()<cr>
@@ -111,16 +111,16 @@ if has('gui_running') || &t_TI =~# "\e\\[>4;[12]m"
     nno <silent><unique> <m-m>? :<c-u>call quickhl#show_help()<cr>
 else
     " If you want to change `F24`, you'll need to update `autoload/lg/map.vim`.
-    nno <silent><unique> <f24>g*    :<c-u>call quickhl#word('n')<cr>
-    nno <silent><unique> <f24>*     :<c-u>call quickhl#whole_word()<cr>
-    xno <silent><unique> <f24>      :<c-u>call quickhl#word('v')<cr>
-    nno <expr><unique> <f24>        quickhl#op()
-    nno <expr><unique> <f24><f24>   quickhl#op()..'_'
-    nno <silent><unique> <f24>C     :<c-u>call quickhl#reset()<cr>
-    nno <silent><unique> <f24>c     :<c-u>call quickhl#clear_this('n')<cr>
-    xno <silent><unique> m<f24>     :<c-u>call quickhl#clear_this('v')<cr>
-    nno <silent><unique> co<f24>    :<c-u>call quickhl#lock_toggle()<cr>
-    nno <silent><unique> <f24>?     :<c-u>call quickhl#show_help()<cr>
+    nno <silent><unique> <f24>g* :<c-u>call quickhl#word('n')<cr>
+    nno <silent><unique> <f24>* :<c-u>call quickhl#whole_word()<cr>
+    xno <silent><unique> <f24> :<c-u>call quickhl#word('v')<cr>
+    nno <expr><unique> <f24> quickhl#op()
+    nno <expr><unique> <f24><f24> quickhl#op() .. '_'
+    nno <silent><unique> <f24>C :<c-u>call quickhl#reset()<cr>
+    nno <silent><unique> <f24>c :<c-u>call quickhl#clear_this('n')<cr>
+    xno <silent><unique> m<f24> :<c-u>call quickhl#clear_this('v')<cr>
+    nno <silent><unique> co<f24> :<c-u>call quickhl#lock_toggle()<cr>
+    nno <silent><unique> <f24>? :<c-u>call quickhl#show_help()<cr>
 endif
 
 " Commands {{{1

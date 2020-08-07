@@ -3,6 +3,9 @@ if exists('g:autoloaded_quickhl')
 endif
 let g:autoloaded_quickhl = 1
 
+import Opfunc from 'lg.vim' | const s:SID = execute('fu s:Opfunc')->matchstr('\C\<def\s\+\zs<SNR>\d\+_')
+import Getselection from 'lg.vim'
+
 let s:manual = {
     \ 'name': 'QuickhlManual\d',
     \ 'enabled': 0,
@@ -11,13 +14,13 @@ let s:manual = {
 
 fu s:manual.init() abort "{{{1
     let self.colors = self.read_colors(g:quickhl_manual_colors)
-    let self.history = range(len(g:quickhl_manual_colors))
+    let self.history = len(g:quickhl_manual_colors)->range()
     call self.init_highlight()
 endfu
 
 fu s:manual.read_colors(list) abort "{{{1
-    return map(copy(a:list), {i,v -> {
-        \ 'name': 'QuickhlManual'..i,
+    return copy(a:list)->map({i, v -> {
+        \ 'name': 'QuickhlManual' .. i,
         \ 'val': v,
         \ 'pat': '',
         \ 'escaped': 0,
@@ -25,7 +28,7 @@ fu s:manual.read_colors(list) abort "{{{1
 endfu
 
 fu s:manual.init_highlight() abort "{{{1
-    call map(copy(self.colors), 'execute("hi "..v:val.name.." "..v:val.val)')
+    call copy(self.colors)->map('execute("hi " .. v:val.name .. " " .. v:val.val)')
 endfu
 
 fu s:manual.set() abort "{{{1
@@ -37,9 +40,9 @@ fu s:manual.set() abort "{{{1
         "
         " What about this instead?:
         "
-        "     for color in filter(deepcopy(self.colors), {_,v -> v.pat != ''})
+        "     for color in deepcopy(self.colors)->filter({_, v -> v.pat != ''})
         "}}}
-        if color.pat is# '' | continue | endif
+        if color.pat == '' | continue | endif
         call s:highlight(color.pat, color.name)
     endfor
     call winrestview(view)
@@ -50,7 +53,7 @@ fu s:manual.set() abort "{{{1
 
 
     "     fu! Func(name, pat) abort
-    "         if a:pat is# '' | return | endif
+    "         if a:pat == '' | return | endif
     "         let bufnr = bufnr('%')
     "         sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
     "         call cursor(1, 1)
@@ -63,14 +66,15 @@ fu s:manual.set() abort "{{{1
     "                 \ })
     "         endwhile
     "     endfu
-    "     call map(copy(self.colors), {_,v -> Func(v.name, v.pat)})
+    "     call copy(self.colors)->map({_, v -> Func(v.name, v.pat)})
 endfu
 
 fu s:manual.clear() abort "{{{1
     " TODO: try to get rid of `sil!`; how to check a text property exists?
     " TODO: This clears all highlights.  How about clearing only the highlight under the cursor? (`m-*`, `x_m-`)
-    sil! call map(range(len(g:quickhl_manual_colors)),
-        \ {_,v -> prop_remove(#{type: 'QuickhlManual'..v, all: v:true})})
+    sil! call len(g:quickhl_manual_colors)
+        \ ->range()
+        \ ->map({_, v -> prop_remove(#{type: 'QuickhlManual' .. v, all: v:true})})
 endfu
 
 fu s:manual.reset() abort "{{{1
@@ -91,12 +95,12 @@ fu s:manual.refresh() abort "{{{1
 endfu
 
 fu s:manual.show_colors() abort "{{{1
-    call map(copy(self.colors), "execute('hi '..v:val.name, '')")
+    call copy(self.colors)->map("execute('hi ' .. v:val.name, '')")
 endfu
 
 fu s:manual.add(pat, escaped) abort "{{{1
     let pat = a:escaped ? a:pat : s:escape(a:pat)
-    if  s:manual.index_of(pat) >= 0 | return | endif
+    if s:manual.index_of(pat) >= 0 | return | endif
     let i = self.next_index()
     let self.colors[i].pat = pat
     call add(self.history, i)
@@ -133,10 +137,10 @@ fu s:manual.del_by_index(idx) abort "{{{1
 endfu
 
 fu s:manual.list() abort "{{{1
-    for idx in range(len(self.colors))
+    for idx in len(self.colors)->range()
         let color = self.colors[idx]
-        exe 'echohl '..color.name
-        echo printf('%2d: ', idx)..color.pat
+        exe 'echohl ' .. color.name
+        echo printf('%2d: ', idx) .. color.pat
         echohl None
     endfor
 endfu
@@ -146,10 +150,10 @@ endfu
 fu quickhl#word(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     " TODO: Should we handle the pattern as a list to preserve possible NULs?
-    " If so, remove `->join("\n")` every time we've invoked `lg#getselection()` in this plugin.
+    " If so, remove `->join("\n")` every time we've invoked `s:Getselection()` in this plugin.
     let pat =
         \ a:mode == 'n' ? expand('<cword>') :
-        \ a:mode == 'v' ? lg#getselection()->join("\n") :
+        \ a:mode == 'v' ? s:Getselection()->join("\n") :
         \ ''
     if pat == '' | return | endif
     call s:add_or_del(pat, 0)
@@ -158,18 +162,18 @@ endfu
 fu quickhl#whole_word() abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     let pat = expand('<cword>')
-    call s:add_or_del('\<'..s:escape(pat)..'\>', 1)
+    call s:add_or_del('\<' .. s:escape(pat) .. '\>', 1)
 endfu
 
 fu quickhl#clear_this(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     let pat =
         \ a:mode is# 'n' ? expand('<cword>') :
-        \ a:mode is# 'v' ? lg#getselection()->join("\n") :
+        \ a:mode is# 'v' ? s:Getselection()->join("\n") :
         \ ''
-    if pat is# '' | return | endif
+    if pat == '' | return | endif
     let pat_et = s:escape(pat)
-    let pat_ew = '\<'..s:escape(pat)..'\>'
+    let pat_ew = '\<' .. s:escape(pat) .. '\>'
     if s:manual.index_of(pat_et) != -1
         call s:manual.del(pat_et, 1)
     elseif s:manual.index_of(pat_ew) != -1
@@ -265,7 +269,7 @@ fu quickhl#disable() abort "{{{2
 endfu
 
 fu quickhl#op() abort "{{{2
-    let &opfunc = 'lg#opfunc'
+    let &opfunc = s:SID .. 'Opfunc'
     let g:opfunc = {
         \ 'core': 'quickhl#op_core',
         \ }
@@ -318,7 +322,7 @@ fu s:highlight(pat, name) abort "{{{2
     let flags = 'cW'
     while search(a:pat, flags)
         let [lnum, col] = getcurpos()[1:2]
-        let [end_lnum, end_col] = searchpos(a:pat..'\zs', 'cn')
+        let [end_lnum, end_col] = searchpos(a:pat .. '\zs', 'cn')
         let flags = 'W'
         call prop_add(lnum, col, #{
             \ end_lnum: end_lnum,
@@ -330,7 +334,7 @@ endfu
 "}}}1
 " Util {{{1
 fu s:escape(pat) abort "{{{2
-    return '\V'..substitute(escape(a:pat, '\'), "\n", '\\n', 'g')
+    return '\V' .. escape(a:pat, '\')->substitute("\n", '\\n', 'g')
 endfu
 
 fu s:is_cmdwin() abort "{{{2
