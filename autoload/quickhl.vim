@@ -3,8 +3,8 @@ if exists('g:autoloaded_quickhl')
 endif
 let g:autoloaded_quickhl = 1
 
-import Opfunc from 'lg.vim' | const s:SID = execute('fu s:Opfunc')->matchstr('\C\<def\s\+\zs<SNR>\d\+_')
-import Getselection from 'lg.vim'
+import {Opfunc, GetSelection} from 'lg.vim'
+const s:SID = execute('fu s:Opfunc')->matchstr('\C\<def\s\+\zs<SNR>\d\+_')
 
 let s:manual = {
     \ 'name': 'QuickhlManual\d',
@@ -150,10 +150,10 @@ endfu
 fu quickhl#word(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     " TODO: Should we handle the pattern as a list to preserve possible NULs?
-    " If so, remove `->join("\n")` every time we've invoked `s:Getselection()` in this plugin.
+    " If so, remove `->join("\n")` every time we've invoked `s:GetSelection()` in this plugin.
     let pat =
         \ a:mode == 'n' ? expand('<cword>') :
-        \ a:mode == 'v' ? s:Getselection()->join("\n") :
+        \ a:mode == 'v' ? s:GetSelection()->join("\n") :
         \ ''
     if pat == '' | return | endif
     call s:add_or_del(pat, 0)
@@ -169,7 +169,7 @@ fu quickhl#clear_this(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     let pat =
         \ a:mode is# 'n' ? expand('<cword>') :
-        \ a:mode is# 'v' ? s:Getselection()->join("\n") :
+        \ a:mode is# 'v' ? s:GetSelection()->join("\n") :
         \ ''
     if pat == '' | return | endif
     let pat_et = s:escape(pat)
