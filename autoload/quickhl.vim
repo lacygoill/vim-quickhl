@@ -52,7 +52,7 @@ fu s:manual.set() abort "{{{1
     augroup END
 
 
-    "     fu! Func(name, pat) abort
+    "     fu Func(name, pat) abort
     "         if a:pat == '' | return | endif
     "         let bufnr = bufnr('%')
     "         sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
