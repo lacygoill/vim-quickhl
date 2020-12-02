@@ -3,7 +3,7 @@ if exists('g:autoloaded_quickhl')
 endif
 let g:autoloaded_quickhl = 1
 
-import {Opfunc, GetSelection} from 'lg.vim'
+import {Opfunc, GetSelectionText} from 'lg.vim'
 const s:SID = execute('fu s:Opfunc')->matchstr('\C\<def\s\+\zs<SNR>\d\+_')
 
 let s:manual = {
@@ -19,16 +19,16 @@ fu s:manual.init() abort "{{{1
 endfu
 
 fu s:manual.read_colors(list) abort "{{{1
-    return copy(a:list)->map({i, v -> {
-        \ 'name': 'QuickhlManual' .. i,
-        \ 'val': v,
-        \ 'pat': '',
-        \ 'escaped': 0,
+    return mapnew(a:list, {i, v -> #{
+        \ name: 'QuickhlManual' .. i,
+        \ val: v,
+        \ pat: '',
+        \ escaped: 0,
         \ }})
 endfu
 
 fu s:manual.init_highlight() abort "{{{1
-    call copy(self.colors)->map('execute("hi " .. v:val.name .. " " .. v:val.val)')
+    call mapnew(self.colors, 'execute("hi " .. v:val.name .. " " .. v:val.val)')
 endfu
 
 fu s:manual.set() abort "{{{1
@@ -66,7 +66,7 @@ fu s:manual.set() abort "{{{1
     "                 \ })
     "         endwhile
     "     endfu
-    "     call copy(self.colors)->map({_, v -> Func(v.name, v.pat)})
+    "     call mapnew(self.colors, {_, v -> Func(v.name, v.pat)})
 endfu
 
 fu s:manual.clear() abort "{{{1
@@ -95,7 +95,7 @@ fu s:manual.refresh() abort "{{{1
 endfu
 
 fu s:manual.show_colors() abort "{{{1
-    call copy(self.colors)->map("execute('hi ' .. v:val.name, '')")
+    call mapnew(self.colors, "execute('hi ' .. v:val.name, '')")
 endfu
 
 fu s:manual.add(pat, escaped) abort "{{{1
@@ -150,10 +150,10 @@ endfu
 fu quickhl#word(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     " TODO: Should we handle the pattern as a list to preserve possible NULs?
-    " If so, remove `->join("\n")` every time we've invoked `s:GetSelection()` in this plugin.
+    " If so, remove `->join("\n")` every time we've invoked `s:GetSelectionText()` in this plugin.
     let pat =
         \ a:mode == 'n' ? expand('<cword>') :
-        \ a:mode == 'v' ? s:GetSelection()->join("\n") :
+        \ a:mode == 'v' ? s:GetSelectionText()->join("\n") :
         \ ''
     if pat == '' | return | endif
     call s:add_or_del(pat, 0)
@@ -169,7 +169,7 @@ fu quickhl#clear_this(mode) abort "{{{2
     if !s:manual.enabled | call quickhl#enable() | endif
     let pat =
         \ a:mode is# 'n' ? expand('<cword>') :
-        \ a:mode is# 'v' ? s:GetSelection()->join("\n") :
+        \ a:mode is# 'v' ? s:GetSelectionText()->join("\n") :
         \ ''
     if pat == '' | return | endif
     let pat_et = s:escape(pat)
