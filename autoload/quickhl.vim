@@ -47,7 +47,7 @@ fu s:manual.set() abort "{{{1
     endfor
     call winrestview(view)
 
-    augroup quickhl_persist_after_reload | au!
+    augroup QuickhlPersistAfterReload | au!
         au BufReadPost <buffer> call s:manual.refresh()
     augroup END
 
