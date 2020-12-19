@@ -261,8 +261,7 @@ endfu
 
 fu quickhl#disable() abort "{{{2
     let s:manual.enabled = 0
-    augroup QuickhlManual
-        au!
+    augroup QuickhlManual | au!
     augroup END
     au! QuickhlManual
     call quickhl#reset()
