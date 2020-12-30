@@ -320,7 +320,7 @@ fu s:highlight(pat, name) abort "{{{2
     call cursor(1, 1)
     let flags = 'cW'
     while search(a:pat, flags)
-        let [lnum, col] = getcurpos()[1:2]
+        let [lnum, col] = getcurpos()[1 : 2]
         let [end_lnum, end_col] = searchpos(a:pat .. '\zs', 'cn')
         let flags = 'W'
         call prop_add(lnum, col, #{
