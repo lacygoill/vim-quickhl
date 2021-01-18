@@ -42,7 +42,9 @@ fu s:manual.set() abort "{{{1
         "
         "     for color in deepcopy(self.colors)->filter({_, v -> v.pat != ''})
         "}}}
-        if color.pat == '' | continue | endif
+        if color.pat == ''
+            continue
+        endif
         call s:highlight(color.pat, color.name)
     endfor
     call winrestview(view)
@@ -53,7 +55,9 @@ fu s:manual.set() abort "{{{1
 
 
     "     fu Func(name, pat) abort
-    "         if a:pat == '' | return | endif
+    "         if a:pat == ''
+    "             return
+    "         endif
     "         let bufnr = bufnr('%')
     "         sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
     "         call cursor(1, 1)
@@ -100,7 +104,9 @@ endfu
 
 fu s:manual.add(pat, escaped) abort "{{{1
     let pat = a:escaped ? a:pat : s:escape(a:pat)
-    if s:manual.index_of(pat) >= 0 | return | endif
+    if s:manual.index_of(pat) >= 0
+        return
+    endif
     let i = self.next_index()
     let self.colors[i].pat = pat
     call add(self.history, i)
@@ -125,12 +131,16 @@ fu s:manual.del(pat, escaped) abort "{{{1
     let pat = a:escaped ? a:pat : s:escape(a:pat)
 
     let index = self.index_of(pat)
-    if index == -1 | return | endif
+    if index == -1
+        return
+    endif
     call self.del_by_index(index)
 endfu
 
 fu s:manual.del_by_index(idx) abort "{{{1
-    if a:idx >= len(self.colors) | return | endif
+    if a:idx >= len(self.colors)
+        return
+    endif
     let self.colors[a:idx].pat = ''
     call remove(self.history, index(self.history, a:idx))
     call insert(self.history, a:idx, 0 )
@@ -148,30 +158,40 @@ endfu
 
 " Interface {{{1
 fu quickhl#word(mode) abort "{{{2
-    if !s:manual.enabled | call quickhl#enable() | endif
+    if !s:manual.enabled
+        call quickhl#enable()
+    endif
     " TODO: Should we handle the pattern as a list to preserve possible NULs?
     " If so, remove `->join("\n")` every time we've invoked `s:GetSelectionText()` in this plugin.
     let pat =
         \ a:mode == 'n' ? expand('<cword>') :
         \ a:mode == 'v' ? s:GetSelectionText()->join("\n") :
         \ ''
-    if pat == '' | return | endif
+    if pat == ''
+        return
+    endif
     call s:add_or_del(pat, 0)
 endfu
 
 fu quickhl#whole_word() abort "{{{2
-    if !s:manual.enabled | call quickhl#enable() | endif
+    if !s:manual.enabled
+        call quickhl#enable()
+    endif
     let pat = expand('<cword>')
     call s:add_or_del('\<' .. s:escape(pat) .. '\>', 1)
 endfu
 
 fu quickhl#clear_this(mode) abort "{{{2
-    if !s:manual.enabled | call quickhl#enable() | endif
+    if !s:manual.enabled
+        call quickhl#enable()
+    endif
     let pat =
         \ a:mode is# 'n' ? expand('<cword>') :
         \ a:mode is# 'v' ? s:GetSelectionText()->join("\n") :
         \ ''
-    if pat == '' | return | endif
+    if pat == ''
+        return
+    endif
     let pat_et = s:escape(pat)
     let pat_ew = '\<' .. s:escape(pat) .. '\>'
     if s:manual.index_of(pat_et) != -1
@@ -225,7 +245,9 @@ fu quickhl#lock_toggle() abort "{{{2
 endfu
 
 fu quickhl#add(pat, escaped) abort "{{{2
-    if !s:manual.enabled | call quickhl#enable() | endif
+    if !s:manual.enabled
+        call quickhl#enable()
+    endif
     call s:manual.add(a:pat, a:escaped)
     call s:manual.refresh()
 endfu
@@ -234,7 +256,9 @@ fu quickhl#del(pat, escaped) abort "{{{2
     if empty(a:pat)
         call s:manual.list()
         let index = input('index to delete: ')
-        if empty(index) | return | endif
+        if empty(index)
+            return
+        endif
         call s:manual.del_by_index(index)
     else
         call s:manual.del(a:pat, a:escaped)
@@ -301,7 +325,9 @@ endfu
 "}}}1
 " Core {{{1
 fu s:add_or_del(pat, escaped) abort "{{{2
-    if !s:manual.enabled | call quickhl#enable() | endif
+    if !s:manual.enabled
+        call quickhl#enable()
+    endif
 
     if s:manual.index_of(a:escaped ? a:pat : s:escape(a:pat)) == -1
         call s:manual.add(a:pat, a:escaped)
