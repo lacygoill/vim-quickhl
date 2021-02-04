@@ -19,11 +19,11 @@ fu s:manual.init() abort "{{{1
 endfu
 
 fu s:manual.read_colors(list) abort "{{{1
-    return mapnew(a:list, {i, v -> #{
-        \ name: 'QuickhlManual' .. i,
-        \ val: v,
-        \ pat: '',
-        \ escaped: 0,
+    return mapnew(a:list, {i, v -> {
+        \ 'name': 'QuickhlManual' .. i,
+        \ 'val': v,
+        \ 'pat': '',
+        \ 'escaped': 0,
         \ }})
 endfu
 
@@ -60,14 +60,14 @@ fu s:manual.set() abort "{{{1
     "             return
     "         endif
     "         let bufnr = bufnr('%')
-    "         sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr})
+    "         sil! call prop_type_add(a:name, {'highlight': a:name, 'bufnr': bufnr})
     "         call cursor(1, 1)
-    "         while search(a:pat, 'W')
+    "         while search(a:pat, 'W') > 0
     "             let [end_lnum, end_col] = searchpos(a:pat, 'cn')
-    "             call prop_add(line('.'), col('.'), #{
-    "                 \ end_lnum: end_lnum,
-    "                 \ end_col: end_col,
-    "                 \ type: a:name,
+    "             call prop_add(line('.'), col('.'), {
+    "                 \ 'end_lnum': end_lnum,
+    "                 \ 'end_col': end_col,
+    "                 \ 'type': a:name,
     "                 \ })
     "         endwhile
     "     endfu
@@ -79,7 +79,7 @@ fu s:manual.clear() abort "{{{1
     " TODO: This clears all highlights.  How about clearing only the highlight under the cursor? (`m-*`, `x_m-`)
     sil! call len(g:quickhl_manual_colors)
         \ ->range()
-        \ ->map({_, v -> prop_remove(#{type: 'QuickhlManual' .. v, all: v:true})})
+        \ ->map({_, v -> prop_remove({'type': 'QuickhlManual' .. v, 'all': v:true})})
 endfu
 
 fu s:manual.reset() abort "{{{1
@@ -343,17 +343,17 @@ fu s:init_highlight() abort "{{{2
 endfu
 
 fu s:highlight(pat, name) abort "{{{2
-    sil! call prop_type_add(a:name, #{highlight: a:name, bufnr: bufnr('%')})
+    sil! call prop_type_add(a:name, {'highlight': a:name, 'bufnr': bufnr('%')})
     call cursor(1, 1)
     let flags = 'cW'
-    while search(a:pat, flags)
+    while search(a:pat, flags) > 0
         let [lnum, col] = getcurpos()[1 : 2]
         let [end_lnum, end_col] = searchpos(a:pat .. '\zs', 'cn')
         let flags = 'W'
-        call prop_add(lnum, col, #{
-            \ end_lnum: end_lnum,
-            \ end_col: end_col,
-            \ type: a:name,
+        call prop_add(lnum, col, {
+            \ 'end_lnum': end_lnum,
+            \ 'end_col': end_col,
+            \ 'type': a:name,
             \ })
     endwhile
 endfu
