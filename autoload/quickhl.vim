@@ -3,7 +3,10 @@ if exists('g:autoloaded_quickhl')
 endif
 let g:autoloaded_quickhl = 1
 
-import {Opfunc, GetSelectionText} from 'lg.vim'
+import {
+    \ Opfunc,
+    \ GetSelectionText,
+    \ } from 'lg.vim'
 const s:SID = execute('fu s:Opfunc')->matchstr('\C\<def\s\+\zs<SNR>\d\+_')
 
 let s:manual = {
