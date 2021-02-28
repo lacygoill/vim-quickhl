@@ -3,7 +3,7 @@
 if exists('g:loaded_quickhl')
     finish
 endif
-let g:loaded_quickhl = 1
+let g:loaded_quickhl = v:true
 
 " TODO: Don't highlight *all* the matches.  Just the one under the cursor.
 " TODO: Implement a "global" command which would extend the last highlighting to *all* the matches.{{{

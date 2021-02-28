@@ -1,7 +1,7 @@
 if exists('g:autoloaded_quickhl')
     finish
 endif
-let g:autoloaded_quickhl = 1
+let g:autoloaded_quickhl = v:true
 
 import {
     \ Opfunc,
