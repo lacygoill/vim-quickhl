@@ -112,7 +112,7 @@ fu s:manual.add(pat, escaped) abort "{{{1
         return
     endif
     let i = self.next_index()
-    let self.colors[i].pat = pat
+    let self.colors[i]['pat'] = pat
     call add(self.history, i)
 endfu
 
@@ -145,7 +145,7 @@ fu s:manual.del_by_index(idx) abort "{{{1
     if a:idx >= len(self.colors)
         return
     endif
-    let self.colors[a:idx].pat = ''
+    let self.colors[a:idx]['pat'] = ''
     call remove(self.history, index(self.history, a:idx))
     call insert(self.history, a:idx, 0 )
 endfu
