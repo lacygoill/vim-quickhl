@@ -22,16 +22,17 @@ fu s:manual.init() abort "{{{1
 endfu
 
 fu s:manual.read_colors(list) abort "{{{1
-    return mapnew(a:list, {i, v -> {
-        \ 'name': 'QuickhlManual' .. i,
-        \ 'val': v,
-        \ 'pat': '',
-        \ 'escaped': 0,
+    return a:list
+        \ ->mapnew({i, v -> {
+        \     'name': 'QuickhlManual' .. i,
+        \     'val': v,
+        \     'pat': '',
+        \     'escaped': 0,
         \ }})
 endfu
 
 fu s:manual.init_highlight() abort "{{{1
-    call mapnew(self.colors, 'execute("hi " .. v:val.name .. " " .. v:val.val)')
+    eval self.colors->mapnew('execute("hi " .. v:val.name .. " " .. v:val.val)')
 endfu
 
 fu s:manual.set() abort "{{{1
@@ -74,7 +75,7 @@ fu s:manual.set() abort "{{{1
     "                 \ })
     "         endwhile
     "     endfu
-    "     call mapnew(self.colors, {_, v -> Func(v.name, v.pat)})
+    "     eval self.colors->mapnew({_, v -> Func(v.name, v.pat)})
 endfu
 
 fu s:manual.clear() abort "{{{1
@@ -103,7 +104,7 @@ fu s:manual.refresh() abort "{{{1
 endfu
 
 fu s:manual.show_colors() abort "{{{1
-    call mapnew(self.colors, "execute('hi ' .. v:val.name, '')")
+    eval self.colors->mapnew("execute('hi ' .. v:val.name, '')")
 endfu
 
 fu s:manual.add(pat, escaped) abort "{{{1
@@ -305,7 +306,7 @@ endfu
 
 fu quickhl#op_core(type) abort
     " If we operate on a line, don't highlight the first character of the next line.
-    let @" = substitute(@", '\n$', '', '')
+    let @" = @"->substitute('\n$', '', '')
     call s:add_or_del(@", 0)
 endfu
 
